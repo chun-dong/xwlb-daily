@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>每日《新闻联播》总结</title>
+<meta name="theme-color" content="#b00000">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--red:#b00000;--bg:#f5f3ee;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;background:var(--bg);color:#222}
+header{background:var(--red);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px}
+header p{margin:4px 0 0;font-size:12px;opacity:.85}
+main{max-width:720px;margin:0 auto;padding:12px 12px 40px}
+#days{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 10px}
+.chip{background:var(--card);border:1px solid #ddd;border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;color:#333}
+.chip.on{background:var(--red);color:#fff;border-color:var(--red)}
+#content{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);line-height:1.7;font-size:15px;word-break:break-word}
+#content h2{font-size:17px;margin:14px 0 6px}
+#content h3{font-size:15px;margin:10px 0 4px;color:#b00000}
+#content p{margin:5px 0}
+.empty{color:#888;text-align:center;padding:40px 10px}
+footer{text-align:center;color:#999;font-size:12px;padding:14px 10px}
+</style>
+</head>
+<body>
+<header><h1>📺 每日《新闻联播》总结</h1><p>每天 20:30 自动更新 · Codex 生成</p></header>
+<main>
+<div id="days"></div>
+<div id="content"><div class="empty">加载中…</div></div>
+</main>
+<footer>提示：安卓浏览器可"添加到主屏幕"，更像 App</footer>
+<script>
+const daysEl=document.getElementById('days'),contentEl=document.getElementById('content');
+let days=[];
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function render(md){
+  let h='';
+  md.split('\n').forEach(line=>{
+    const t=line.trim();
+    if(!t)return;
+    if(t.startsWith('# '))h+='<h2>'+esc(t.slice(2))+'</h2>';
+    else if(t.startsWith('## '))h+='<h3>'+esc(t.slice(3))+'</h3>';
+    else if(t.startsWith('- '))h+='<p>• '+esc(t.slice(2))+'</p>';
+    else h+='<p>'+esc(t)+'</p>';
+  });
+  return h;
+}
+async function loadList(){
+  try{
+    const r=await fetch('summaries/list.json?t='+Date.now());
+    const j=await r.json(); days=j.days||[];
+    if(!days.length){contentEl.innerHTML='<div class="empty">暂无总结，等待每日自动生成…</div>';return}
+    daysEl.innerHTML='';
+    days.forEach((d,i)=>{const c=document.createElement('div');c.className='chip'+(i===0?' on':'');c.textContent=d;c.onclick=()=>show(d,c);daysEl.appendChild(c)});
+    show(days[0],daysEl.firstChild);
+  }catch(e){contentEl.innerHTML='<div class="empty">加载失败，请检查网络</div>'}
+}
+async function show(date,el){
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  contentEl.innerHTML='<div class="empty">加载中…</div>';
+  try{
+    const r=await fetch('summaries/'+date+'.md?t='+Date.now());
+    contentEl.innerHTML=render(await r.text());
+  }catch(e){contentEl.innerHTML='<div class="empty">读取失败</div>'}
+}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+loadList();
+</script>
+</body>
+</html>
