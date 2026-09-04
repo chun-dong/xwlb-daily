@@ -1,0 +1,17 @@
+{
+  "header_bg": "#9e1420",
+  "header_fg": "#ffffff",
+  "header_sub": "#f6dddd",
+  "bg": "#f5f1ea",
+  "card": "#ffffff",
+  "border": "#e7dccb",
+  "text": "#2a241f",
+  "soft": "#554b40",
+  "muted": "#9a8d7d",
+  "accent": "#a3121c",
+  "accent2": "#1f4e79",
+  "gold": "#c9a45c",
+  "sel_bg": "#a3121c",
+  "sel_fg": "#ffffff",
+  "font": "Microsoft YaHei UI"
+}
