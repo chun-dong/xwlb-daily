@@ -1,74 +1,121 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>每日《新闻联播》总结</title>
-<meta name="theme-color" content="#b00000">
+<title>新闻联播 · 每日详细版</title>
+<meta name="theme-color" content="#a3121c">
 <link rel="manifest" href="manifest.json">
 <style>
-:root{--red:#b00000;--bg:#f5f3ee;--card:#fff}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;background:var(--bg);color:#222}
-header{background:var(--red);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}
-header h1{margin:0;font-size:18px}
-header p{margin:4px 0 0;font-size:12px;opacity:.85}
-main{max-width:720px;margin:0 auto;padding:12px 12px 40px}
-#days{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 10px}
-.chip{background:var(--card);border:1px solid #ddd;border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer;color:#333}
-.chip.on{background:var(--red);color:#fff;border-color:var(--red)}
-#content{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);line-height:1.7;font-size:15px;word-break:break-word}
-#content h2{font-size:17px;margin:14px 0 6px}
-#content h3{font-size:15px;margin:10px 0 4px;color:#b00000}
-#content p{margin:5px 0}
-.empty{color:#888;text-align:center;padding:40px 10px}
-footer{text-align:center;color:#999;font-size:12px;padding:14px 10px}
+:root{
+  --paper:#f5f1ea; --card:#ffffff; --red:#a3121c; --red2:#7c0d15;
+  --ink:#2a241f; --soft:#554b40; --muted:#9a8d7d; --line:#ece2d4; --gold:#c9a45c;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);line-height:1.85}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(140deg,#6f0a11 0%,#a3121c 52%,#c1382a 100%);color:#fff;box-shadow:0 2px 12px rgba(90,10,10,.22)}
+header .in{max-width:780px;margin:0 auto;padding:15px 16px 11px}
+header .top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+header h1{margin:0;font-size:19px;font-weight:800;letter-spacing:.5px}
+header .tag{flex:0 0 auto;font-size:11px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px}
+header .sub{margin:6px 0 0;font-size:12px;opacity:.92}
+main{max-width:780px;margin:0 auto;padding:12px 12px 52px}
+#days{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
+#days::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:13px;color:#5d5347;cursor:pointer;user-select:none;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:all .15s}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 8px rgba(163,18,28,.25)}
+#content{background:var(--card);border-radius:16px;padding:22px 22px 28px;box-shadow:0 2px 16px rgba(70,45,20,.07)}
+.head{border-bottom:2px solid var(--red);padding-bottom:13px;margin-bottom:8px}
+.head .kicker{font-size:12px;color:var(--red);font-weight:700;letter-spacing:2px}
+.head h2{margin:7px 0 0;font-size:22px;line-height:1.5;color:#1c1712}
+.head .meta{margin-top:9px;font-size:12px;color:var(--muted)}
+#content h3{font-size:18px;margin:28px 0 10px;color:#1c1712;display:flex;align-items:center;gap:9px}
+#content h3::before{content:"";width:4px;height:19px;border-radius:2px;background:var(--red)}
+#content p{margin:9px 0;font-size:15.5px;color:#3d362e;text-align:justify}
+#content ul{margin:4px 0;padding:0;list-style:none}
+#content ul li{position:relative;padding-left:20px;margin:6px 0;font-size:15px;color:#3d362e;text-align:justify}
+#content ul li::before{content:"";position:absolute;left:2px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+#content ul li.sub{margin-left:20px;color:#6b5f51;font-size:14.5px}
+#content ul li.sub::before{background:var(--gold);width:5px;height:5px;top:11px}
+.empty{color:var(--muted);text-align:center;padding:60px 12px;font-size:14px}
+.loading{color:var(--muted);text-align:center;padding:46px 0;font-size:14px}
+footer{max-width:780px;margin:0 auto;text-align:center;color:#ab9d8c;font-size:12px;padding:4px 16px 28px;line-height:2}
 </style>
 </head>
 <body>
-<header><h1>📺 每日《新闻联播》总结</h1><p>每天 20:30 自动更新 · Codex 生成</p></header>
+<header>
+  <div class="in">
+    <div class="top"><h1>新闻联播 · 每日详细版</h1><span class="tag">每晚 20:30 自动更新</span></div>
+    <div class="sub">由 Codex 自动整理 · 收录当日《新闻联播》完整要点</div>
+  </div>
+</header>
 <main>
-<div id="days"></div>
-<div id="content"><div class="empty">加载中…</div></div>
+  <div id="days"></div>
+  <div id="content"><div class="loading">加载中…</div></div>
 </main>
-<footer>提示：安卓浏览器可"添加到主屏幕"，更像 App</footer>
+<footer>手机用户点浏览器菜单「添加到主屏幕」，用起来就像 App<br>内容来自央视《新闻联播》及权威报道，仅供学习参考</footer>
 <script>
-const daysEl=document.getElementById('days'),contentEl=document.getElementById('content');
-let days=[];
+(function(){
+var daysEl=document.getElementById('days'),contentEl=document.getElementById('content');
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function render(md){
-  let h='';
-  md.split('\n').forEach(line=>{
-    const t=line.trim();
-    if(!t)return;
-    if(t.startsWith('# '))h+='<h2>'+esc(t.slice(2))+'</h2>';
-    else if(t.startsWith('## '))h+='<h3>'+esc(t.slice(3))+'</h3>';
-    else if(t.startsWith('- '))h+='<p>• '+esc(t.slice(2))+'</p>';
-    else h+='<p>'+esc(t)+'</p>';
-  });
-  return h;
+function parse(md){
+  var lines=md.replace(/\r/g,'').split('\n');
+  var title='',kicker='《新闻联播》详细版',html='';
+  for(var i=0;i<lines.length;i++){
+    var raw=lines[i].replace(/\s+$/,'');
+    var t=raw.trim();
+    if(!t)continue;
+    if(/^#+ /.test(t)){
+      var lv=0;while(t.charAt(lv)==='#')lv++;
+      var txt=esc(t.slice(lv).trim());
+      if(lv===1){
+        title=txt;
+        var mm=txt.match(/(20\d{2}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)/);
+        if(mm)kicker=mm[1]+' · 详细版';
+      }else if(lv===2){html+='<h3>'+txt+'</h3>';}
+      continue;
+    }
+    if(/^-\s+/.test(t)){
+      var inner=t.replace(/^-\s+/,'');
+      html+='<ul><li>'+esc(inner)+'</li></ul>';
+      continue;
+    }
+    if(/^\s{2,}-\s+/.test(raw)){
+      var inner2=raw.replace(/^\s+-\s+/,'');
+      html+='<ul><li class="sub">'+esc(inner2)+'</li></ul>';
+      continue;
+    }
+    html+='<p>'+esc(t)+'</p>';
+  }
+  var head='<div class="head"><div class="kicker">'+esc(kicker)+'</div><h2>'+esc(title||'今日详细版')+'</h2><div class="meta">自动生成 · 可随时回看往期</div></div>';
+  return head+html;
 }
-async function loadList(){
-  try{
-    const r=await fetch('summaries/list.json?t='+Date.now());
-    const j=await r.json(); days=j.days||[];
-    if(!days.length){contentEl.innerHTML='<div class="empty">暂无总结，等待每日自动生成…</div>';return}
+function show(date,chip){
+  var kids=daysEl.children;
+  for(var i=0;i<kids.length;i++)kids[i].classList.remove('on');
+  if(chip)chip.classList.add('on');
+  contentEl.innerHTML='<div class="loading">加载中…</div>';
+  fetch('summaries/'+date+'.md?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){contentEl.innerHTML=parse(t)}).catch(function(){contentEl.innerHTML='<div class="empty">这一天的内容没抓到，可能还没生成，晚点再来。</div>'});
+}
+function load(){
+  fetch('summaries/list.json?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    var days=j.days||[];
+    if(!days.length){contentEl.innerHTML='<div class="empty">还没有总结，等每晚 20:30 自动生成。</div>';return}
     daysEl.innerHTML='';
-    days.forEach((d,i)=>{const c=document.createElement('div');c.className='chip'+(i===0?' on':'');c.textContent=d;c.onclick=()=>show(d,c);daysEl.appendChild(c)});
-    show(days[0],daysEl.firstChild);
-  }catch(e){contentEl.innerHTML='<div class="empty">加载失败，请检查网络</div>'}
+    days.forEach(function(d,i){
+      var c=document.createElement('div');
+      c.className='chip'+(i===0?' on':'');
+      c.textContent=(i===0?'最新 ':'')+d;
+      c.onclick=function(){show(d,c)};
+      daysEl.appendChild(c);
+    });
+    show(days[0]);
+  }).catch(function(){contentEl.innerHTML='<div class="empty">加载失败，检查网络后刷新试试。</div>'});
 }
-async function show(date,el){
-  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');
-  contentEl.innerHTML='<div class="empty">加载中…</div>';
-  try{
-    const r=await fetch('summaries/'+date+'.md?t='+Date.now());
-    contentEl.innerHTML=render(await r.text());
-  }catch(e){contentEl.innerHTML='<div class="empty">读取失败</div>'}
-}
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
-loadList();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+load();
+})();
 </script>
 </body>
 </html>
